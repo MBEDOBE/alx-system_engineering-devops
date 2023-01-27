@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Script that displays content of current directory in list format using for loop
-list="$(ls)"
-for i in $list; do
-    echo "$i" | cut -d'-' -f2
+# Display ls -l with cutting their #
+
+LS="$(ls)"
+for i in $LS
+do
+    echo "$i" | cut -d - -f2
 done
