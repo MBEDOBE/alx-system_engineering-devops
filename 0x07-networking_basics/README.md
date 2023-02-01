@@ -26,11 +26,13 @@ What you should learn from this project:
 
 
 ### [4. TCP and UDP ports](./4-TCP_and_UDP_ports)
-* Once packets have been sent to the right network device using IP using either UDP or TCP as a mode of transportation, it needs to actually enter the network device.
+* Write a Bash script that displays listening ports:
+  * That only shows listening sockets
+  * That shows the PID and name of the program to which each socket belong.
 
 
 ### [5. Is the host on the network](./5-is_the_host_on_the_network)
-* 
+* Write a Bash script that pings an IP address passed as an argument.
 
 ---
 
