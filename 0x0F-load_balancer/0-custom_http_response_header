@@ -1,36 +1,40 @@
 #!/usr/bin/env bash
-# Configure Nginx so that its HTTP response contains
-# a custom header
-#
+# Configure Nginx so that it's HTTP response contains a custome header (on web-01 and web-02)
+# The name of the custom HTTP header must be X-Served-By
+# The value of the custom HTTP header must be the hostname of the server Nginx is running on
 
-link="https://youtu.be/vlkrUC-xJak"
-new_conf="server_name _;\n\trewrite ^/redirect_me/$ $link permanent;"
-location_error="location = /404.html {\n\t\troot /var/www/html/;\n\t\tinternal;\n"
-error_directive="error_page 404 /404.html;\n\t$location_error"
-error_404="}\n\n\t$error_directive\t}"
+sudo apt-get update
+sudo apt-get -y install nginx
 
-sudo apt update
-sudo apt install -y nginx
+# configure firewell to allow request through port 80
 sudo ufw allow 'Nginx HTTP'
-echo "School" | sudo tee /var/www/html/index.html
-echo "This is not a page" | sudo tee /var/www/html/404.html
-sudo sed -i "s|server_name\ _;|$new_conf|" /etc/nginx/sites-available/default
-sudo sed -i "0,/}/ s|}|$error_404|" /etc/nginx/sites-available/default
-sudo service nginx restart
 
-config_file="/etc/nginx/nginx.conf"
+sudo mkdir -p /var/www/html
 
-if ! sudo grep -q "add_header X-Served-By" $config_file;
-then
-    header_key="X-Served-By"
-    header_value="\$hostname"
-    header="add_header $header_key $header_value;"
-    search="http {"
-    new_conf="$search\n\t$header"
+# change permissions to allow us to easily create files in this directory
+sudo chmod -R 755 /var/www
 
-    # Replace the value found with the new configuration
-    sudo sed -i "s|$search|$new_conf|" $config_file
+# create the index page
+echo 'Hello World!' |sudo tee /var/www/html/index.html
 
-    # Restart Nginx Service
-    sudo service nginx restart
-fi
+# create a webpage for 404
+echo "Ceci n'est pas une page" |sudo tee /var/www/html/custom_404.html
+
+SERVER=$(hostname)
+
+SERVER_CONFIG=\
+"server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+        root /var/www/html;
+        index index.html index.htm index.nginx-debian.html;
+        server_name _;
+        location / {
+		add_header X-Served-By '$SERVER';
+                try_files \$uri \$uri/ =404;
+        }
+}"
+
+bash -c "echo -e '$SERVER_CONFIG' > /etc/nginx/sites-enabled/default"
+
+sudo /etc/init.d/nginx restart
