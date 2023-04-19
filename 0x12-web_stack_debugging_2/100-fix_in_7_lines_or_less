@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#  script to run nginx 
+sed -i -E 's/#user.+\;/user nginx;/' /etc/nginx/nginx.conf
+sed -i 's/80/8080/' /etc/nginx/sites-enabled/default
+chmod +rw /etc/nginx/nginx.conf
+pkill apache2
+su -l nginx -c 'service nginx start'
