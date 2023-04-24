@@ -1,32 +1,36 @@
 #!/usr/bin/python3
+
+"""
+Retrieve and process the TODO list progress of a given employee ID using the provided REST API.
+"""
+
 import requests
-from sys import argv
-"""
-accessing a url with employee ID to return information
-"""
-if len(sys.argv) != 2:
-    print("Usage: {} EMPLOYEE_ID".format(sys.argv[0]))
-    sys.exit(1)
+import sys
 
-employee_id = sys.argv[1]
 
-# Fetch employee information
-employee_resp = requests.get("https://jsonplaceholder.typicode.com/users/{}".format(employee_id))
-employee_resp.raise_for_status()
-employee = employee_resp.json()
-employee_name = employee["name"]
+def main():
+    """
+    Retrieve and process the TODO list progress of a given employee ID.
+    """
+    employee_id = sys.argv[1]
 
-# Fetch employee TODO list
-todo_resp = requests.get("https://jsonplaceholder.typicode.com/todos?userId={}".format(employee_id))
-todo_resp.raise_for_status()
-todos = todo_resp.json()
+    response = requests.get(f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos")
 
-# Compute progress
-num_done = sum(1 for todo in todos if todo["completed"])
-total = len(todos)
+    if response.status_code != 200:
+        print("Error: Failed to retrieve TODO list.")
+        sys.exit(1)
 
-# Display progress
-print("Employee {} is done with tasks({}/{}):".format(employee_name, num_done, total))
-for todo in todos:
-    if todo["completed"]:
-        print("\t {} {}".format("\t", todo["title"]))
+    todos = response.json()
+
+    total_tasks = len(todos)
+    done_tasks = sum(1 for todo in todos if todo.get("completed"))
+
+    print(f"Employee {todos[0].get('name')} is done with {done_tasks}/{total_tasks} tasks:")
+
+    for todo in todos:
+        if todo.get("completed"):
+            print(f"\t{todo.get('title')}")
+
+
+if __name__ == "__main__":
+    main()
