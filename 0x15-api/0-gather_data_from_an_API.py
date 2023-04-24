@@ -4,23 +4,29 @@ from sys import argv
 """
 accessing a url with employee ID to return information
 """
+if len(sys.argv) != 2:
+    print("Usage: {} EMPLOYEE_ID".format(sys.argv[0]))
+    sys.exit(1)
 
+employee_id = sys.argv[1]
 
-if __name__ == "__main__":
-    """
-    function to get employees todo list
-    progress
-    """
-    ID = int(argv[1])
-    user = requests.get("https://jsonplaceholder.typicode.com/users/{}".
-                        format(ID)).json()
-    todo = requests.get("https://jsonplaceholder.typicode.com/todos?userId={}".
-                        format(ID)).json()
-    tasks = []
-    for task in todo:
-        if task.get('completed') is True:
-            tasks.append(task.get('title'))
-    print("Employee {} is done with tasks({}/{}):".
-          format(user.get('name'), len(tasks), len(todo)))
-    for task in tasks:
-        print("\t {}".format(task))
+# Fetch employee information
+employee_resp = requests.get("https://jsonplaceholder.typicode.com/users/{}".format(employee_id))
+employee_resp.raise_for_status()
+employee = employee_resp.json()
+employee_name = employee["name"]
+
+# Fetch employee TODO list
+todo_resp = requests.get("https://jsonplaceholder.typicode.com/todos?userId={}".format(employee_id))
+todo_resp.raise_for_status()
+todos = todo_resp.json()
+
+# Compute progress
+num_done = sum(1 for todo in todos if todo["completed"])
+total = len(todos)
+
+# Display progress
+print("Employee {} is done with tasks({}/{}):".format(employee_name, num_done, total))
+for todo in todos:
+    if todo["completed"]:
+        print("\t {} {}".format("\t", todo["title"]))
