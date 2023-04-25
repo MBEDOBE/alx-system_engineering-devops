@@ -1,37 +1,34 @@
 #!/usr/bin/python3
-
-"""
-Retrieve and process the TODO list progress of a given employee ID using the provided REST API.
-"""
+"""Script to access a REST API for TODO lists of employees"""
 
 import requests
 import sys
+from sys import argv
 
 
-def main():
-    """
-    Retrieve and process the TODO list progress of a given employee ID.
-    """
-    employee_id = sys.argv[1]
+if __name__ == '__main__':
+    baseUrl = 'https://jsonplaceholder.typicode.com/users'
+    employeeId = sys.argv[1]
+    url = baseUrl + "/" + employeeId
 
-    response = requests.get(f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos")
+    # Get employee name
+    response = requests.get(url)
+    employeeName = response.json().get('name')
 
-    if response.status_code != 200:
-        print("Error: Failed to retrieve TODO list.")
-        sys.exit(1)
+    # Get data on the ToDo of the employee
+    todoUrl = url + "/todos"
+    response = requests.get(todoUrl)
+    tasks = response.json()
+    done = 0
+    done_tasks = []
 
-    todos = response.json()
+    for task in tasks:
+        if task.get('completed'):
+            done_tasks.append(task)
+            done += 1
 
-    total_tasks = len(todos)
-    done_tasks = sum(1 for todo in todos if todo.get("completed"))
+    print("Employee {} is done with tasks({}/{}):"
+          .format(employeeName, done, len(tasks)))
 
-    print(f"Employee {todos[0].get('name')} is done with {done_tasks}/{total_tasks} tasks:")
-
-    for todo in todos:
-        if todo.get("completed"):
-            print(f"\t{todo.get('title')}")
-
-
-if __name__ == "__main__":
-    main()
-
+    for task in done_tasks:
+        print("\t {}".format(task.get('title')))
