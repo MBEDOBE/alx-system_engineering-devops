@@ -1,7 +1,14 @@
+#!/usr/bin/python3
 import requests
-
+"""
+a functions that queries the reddit api
+"""
 
 def top_ten(subreddit):
+    """
+    function definition that prints the titles of first 10 hot posts listed
+    for a given subreddit
+    """
     url = f"https://www.reddit.com/r/{subreddit}/hot.json"
     headers = {"User-Agent": "Mozilla/5.0"}
     response = requests.get(url, headers=headers, allow_redirects=False)
