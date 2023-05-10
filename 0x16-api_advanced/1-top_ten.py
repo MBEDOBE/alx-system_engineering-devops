@@ -1,24 +1,20 @@
 #!/usr/bin/python3
+"""Advanced API module using reddit api endpoint"""
 import requests
-"""
-functions that queries the reddit api
-"""
 
 
 def top_ten(subreddit):
-    """
-    function definition that prints the titles of first 10 hot posts listed
-    for a given subreddit
-    """
-    url = "https://api.reddit.com/r/{}?sort=hot&limit=10".format(subreddit)
-    header = {'User-Agent': 'CustomClient/1.0'}
-    req = requests.get(url, headers=header, allow_redirects=False)
-    if req.status_code != 200:
-        print(None)
-        return
-    req = req.json()
-    if "data" in req:
-        for post in req.get("data").get("children"):
-            print(post.get("data").get("title"))
-    else:
-        print(None)
+    """Request reddit api and return first 10 subreddit titles"""
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+    headers = {"User-Agent": "Mozilla/5.0"}
+    params = {"limit": 10}
+
+    try:
+        response = requests.get(url, params=params, headers=headers)
+        response.raise_for_status()
+        data = response.json()
+
+        for post in data["data"]["children"]:
+            print(post["data"]["title"])
+    except requests.exceptions.HTTPError as error:
+        print("None")
