@@ -3,19 +3,19 @@ import requests
 """
 a functions that queries the reddit api
 """
-
 def top_ten(subreddit):
-    """Request reddit api and return first 10 subreddit titles"""
-    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
-    headers = {"User-Agent": "Mozilla/5.0"}
-    params = {"limit": 10}
-
-    try:
-        response = requests.get(url, params=params, headers=headers)
-        response.raise_for_status()
-        data = response.json()
-
-        for post in data["data"]["children"]:
-            print(post["data"]["title"])
-    except requests.exceptions.HTTPError as error:
+    """Print the titles of the 10 hottest posts on a given subreddit."""
+    url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+    params = {
+        "limit": 10
+    }
+    response = requests.get(url, headers=headers, params=params,
+                            allow_redirects=False)
+    if response.status_code == 404:
         print("None")
+        return
+    results = response.json().get("data")
+    [print(c.get("data").get("title")) for c in results.get("children")]
