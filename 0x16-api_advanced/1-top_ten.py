@@ -5,17 +5,17 @@ a functions that queries the reddit api
 """
 
 def top_ten(subreddit):
-    """
-    function definition that prints the titles of first 10 hot posts listed
-    for a given subreddit
-    """
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
+    """Request reddit api and return first 10 subreddit titles"""
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
     headers = {"User-Agent": "Mozilla/5.0"}
-    response = requests.get(url, headers=headers, allow_redirects=False)
-    
-    if response.status_code == 200:
+    params = {"limit": 10}
+
+    try:
+        response = requests.get(url, params=params, headers=headers)
+        response.raise_for_status()
         data = response.json()
-        for post in data["data"]["children"][:10]:
+
+        for post in data["data"]["children"]:
             print(post["data"]["title"])
-    else:
-        print(None)
+    except requests.exceptions.HTTPError as error:
+        print("None")
