@@ -1,5 +1,5 @@
 # Server Outage Incident Report (Created)
-> By Daniel Mbedobe KUNJI (Mbedobe)
+> By Daniel Mbedobe KUNJI - [mbedobe](https://github.com/mbedobe)
 
 ## Issue Summary:
 On May 4, 2023, starting at 3:00 PM PST, users experienced a complete outage of our online retail website. This lasted for 2 hours and impacted 100% of our users, resulting in significant revenue loss.
