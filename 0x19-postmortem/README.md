@@ -29,3 +29,7 @@ To prevent similar issues from happening in the future, we will be taking the fo
 - Implement monitoring and alerting on the disk space usage on all our servers.
 - Review and improve our incident response process.
 - Conduct a thorough review of all our systems to identify potential sources of similar issues and take appropriate actions.
+
+----
+## Author
+* **Daniel Mbedobe** - [mbedobe](https://github.com/mbedobe)
