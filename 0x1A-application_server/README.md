@@ -28,3 +28,6 @@ On the other hand, a web server's primary function is to handle HTTP requests an
 -------------------
 
 Note: The specific steps and configurations may vary depending on your Ubuntu version, system setup, and project requirements. It's always recommended to refer to official documentation and guides for detailed instructions tailored to your environment.
+>
+## Author
+* **Daniel Mbedobe** - [mbedobe](https://github.com/mbedobe)
